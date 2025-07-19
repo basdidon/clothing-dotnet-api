@@ -7,13 +7,14 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:3000");
-                      });
+    options.AddPolicy(
+        name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins(builder.Configuration.GetSection("cors:allowUrls").Get<string[]>()!);
+        });
 });
-StripeConfiguration.ApiKey = "";
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("stripe:apikey").Value!;
 
 var app = builder.Build();
 
@@ -45,7 +46,7 @@ app.MapPost("/create-checkout-session", () =>
             },
         ],
         Mode = "payment",
-        PaymentMethodTypes = ["card","klarna"],
+        PaymentMethodTypes = ["card"],
         ReturnUrl = domain + "/return?session_id={CHECKOUT_SESSION_ID}",
     };
     var service = new SessionService();

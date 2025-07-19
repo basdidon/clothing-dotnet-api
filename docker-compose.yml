@@ -4,3 +4,22 @@ services:
     build:
       context: .
       dockerfile: payment.api/Dockerfile
+
+  products.api:
+    image: ${DOCKER_REGISTRY-}productsapi
+    build:
+      context: .
+      dockerfile: products.api/Dockerfile
+    depends_on:
+      products.db:
+        condition: service_healthy
+
+  products.db:
+    image: postgres:latest
+    container_name: products.db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+

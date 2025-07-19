@@ -6,8 +6,8 @@
     <DockerPublishLocally>False</DockerPublishLocally>
     <ProjectGuid>c6495dff-906e-41ca-90e6-d1dd86ad7ace</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>payment.api</DockerServiceName>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/api/v1/products</DockerServiceUrl>
+    <DockerServiceName>products.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
