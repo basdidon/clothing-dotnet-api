@@ -1,0 +1,3 @@
+VHOST: /
+QUEUE: get-product-prices-request-handler
+INDEX: v2

@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>d65fdead-4839-45b7-917f-ba1f87c3289e</UserSecretsId>
+    <UserSecretsId>8c9aeaa0-9064-4011-860f-d6bfbc6a5baf</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
@@ -29,13 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Constants\" />
-    <Folder Include="Features\Categories\GetById\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Contract\Contract.csproj" />
     <ProjectReference Include="..\Shared\SharedLibrary.csproj" />
   </ItemGroup>
-
+  
 </Project>

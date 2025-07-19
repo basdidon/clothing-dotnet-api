@@ -1,38 +1,19 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Products.Api;
-using Products.Api.Consumers;
-using Products.Api.Extensions;
-using Products.Api.Persistance;
+using SharedLibrary.FastEndpoint.Filters;
 using SharedLibrary.Masstransit;
 using SharedLibrary.Settings;
-
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<MessageBrokerSettings>(builder.Configuration.GetSection("MessageBroker"));
 
-builder.Services.AddDbContext<ApplicationDbContext>(opts =>
+builder.Services.AddMassTransit(x =>
 {
-    var environment = builder.Environment;
-    opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-    if(environment.IsDevelopment())
-    {
-        opts.UseCustomAsyncSeeding();
-    }
-});
-
-builder.Services.AddMassTransit(busConfigurator =>
-{
-    busConfigurator.SetKebabCaseEndpointNameFormatter();
-
-    busConfigurator.AddConsumer<GetProductPricesRequestHandler>();
- 
-    busConfigurator.UsingRabbitMq((context, configurator) =>
+    x.SetKebabCaseEndpointNameFormatter();
+    x.UsingRabbitMq((context, configurator) =>
     {
         configurator.ConnectConsumeObserver(new LoggingConsumeObserver());
         configurator.UseDelayedMessageScheduler();
@@ -42,26 +23,8 @@ builder.Services.AddMassTransit(busConfigurator =>
             h.Username(settings.Username);
             h.Password(settings.Password);
         });
-
-        /*
-        configurator.ReceiveEndpoint("rollback_submit_product_queue", e =>
-        {
-            e.ConfigureConsumer<RollbackSubmitProductConsumer>(context);
-        });*/
-
-
         configurator.ConfigureEndpoints(context);
     });
-});
-       
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(
-        name: MyAllowSpecificOrigins,
-        policy =>
-        {
-            policy.WithOrigins(["http://localhost:3000"]);
-        });
 });
 
 builder.Services
@@ -72,19 +35,12 @@ builder.Services
        o.DocumentSettings = s =>
        {
            s.DocumentName = "Initial Release";
-           s.Title = "Product API";
+           s.Title = "Order API";
            s.Version = "v1";
        };
    });
 
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    await app.ApplyMigrationsAsync(resetOnStart:true);
-}
-
-app.UseCors(MyAllowSpecificOrigins);
 
 app.UseFastEndpoints(c =>
 {

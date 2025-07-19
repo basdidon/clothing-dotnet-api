@@ -1,4 +1,18 @@
 services:
+  rabbit-mq:
+    image: rabbitmq:management
+    container_name: app.RabbitMq
+    hostname: app-mq
+    volumes:
+      - ./.containers/queue/data/:/var/lib/rabbitmq
+      - ./.containers/queue/log/:/var/log/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+
   payment.api:
     image: ${DOCKER_REGISTRY-}paymentapi
     build:
@@ -22,4 +36,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  orders.api:
+    image: ${DOCKER_REGISTRY-}ordersapi
+    build:
+      context: .
+      dockerfile: Orders.Api/Dockerfile
 

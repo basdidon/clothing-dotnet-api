@@ -14,13 +14,14 @@ builder.Services.AddCors(options =>
             policy.WithOrigins(builder.Configuration.GetSection("cors:allowUrls").Get<string[]>()!);
         });
 });
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("stripe:apikey").Value!;
+// key : "Stripe:Apikey" should be set in appsettings.json or environment variables
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:Apikey").Value!;
 
 var app = builder.Build();
 
 app.UseCors(MyAllowSpecificOrigins);
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Hello World!"); 
 app.MapPost("/create-checkout-session", () =>
 {
     var domain = "http://localhost:3000";

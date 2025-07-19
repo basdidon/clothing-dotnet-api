@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "payment.api": "StartDebugging",
-        "products.api": "StartDebugging"
+        "products.api": "StartDebugging",
+        "orders.api": "StartDebugging"
       }
     }
   }
