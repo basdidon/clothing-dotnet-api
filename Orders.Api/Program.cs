@@ -1,14 +1,22 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Orders.Api.Persistance;
 using SharedLibrary.FastEndpoint.Filters;
 using SharedLibrary.Masstransit;
+using SharedLibrary.Persistance.Extensions;
 using SharedLibrary.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<MessageBrokerSettings>(builder.Configuration.GetSection("MessageBroker"));
+
+builder.Services.AddDbContext<ApplicationDbContext>(opts =>
+{
+    opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Services.AddMassTransit(x =>
 {
@@ -41,6 +49,12 @@ builder.Services
    });
 
 var app = builder.Build();
+
+
+if (app.Environment.IsDevelopment())
+{
+    await app.EnsureDatabaseCreatedAsync<ApplicationDbContext>(resetOnStart: true);
+}
 
 app.UseFastEndpoints(c =>
 {

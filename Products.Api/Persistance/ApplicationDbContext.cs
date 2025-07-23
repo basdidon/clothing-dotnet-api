@@ -3,7 +3,7 @@ using Products.Api.Models;
 
 namespace Products.Api.Persistance
 {
-    public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }

@@ -1,10 +1,55 @@
+using FastEndpoints;
+using FastEndpoints.Swagger;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Payment.Api.Consumers;
+using Payment.Api.Persistence;
+using SharedLibrary.FastEndpoint.Filters;
+using SharedLibrary.Masstransit;
+using SharedLibrary.Persistance.Extensions;
+using SharedLibrary.Settings;
 using Stripe;
 using Stripe.Checkout;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+
+// key : "Stripe:Apikey" should be set in appsettings.json or environment variables
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:Apikey").Value!;
+
+builder.Services.Configure<MessageBrokerSettings>(builder.Configuration.GetSection("MessageBroker"));
+
+builder.Services.AddScoped<SessionService>();
+builder.Services.AddScoped<PaymentIntentService>();
+
+builder.Services.AddDbContext<ApplicationDbContext>(opts =>
+{
+    opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<CheckoutConsumer>();
+    x.AddConsumer<CreatePaymentIntentConsumer>();
+
+    x.SetKebabCaseEndpointNameFormatter();
+    x.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.ConnectConsumeObserver(new LoggingConsumeObserver());
+        configurator.UseDelayedMessageScheduler();
+        var settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
+        configurator.Host(new Uri(settings.Host), h =>
+        {
+            h.Username(settings.Username);
+            h.Password(settings.Password);
+        });
+        configurator.ConfigureEndpoints(context);
+    });
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
@@ -14,53 +59,40 @@ builder.Services.AddCors(options =>
             policy.WithOrigins(builder.Configuration.GetSection("cors:allowUrls").Get<string[]>()!);
         });
 });
-// key : "Stripe:Apikey" should be set in appsettings.json or environment variables
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:Apikey").Value!;
+
+
+builder.Services
+   .AddFastEndpoints(o => o.IncludeAbstractValidators = true)
+   .SwaggerDocument(o =>
+   {
+       o.MaxEndpointVersion = 1;
+       o.DocumentSettings = s =>
+       {
+           s.DocumentName = "Initial Release";
+           s.Title = "Payment API";
+           s.Version = "v1";
+       };
+   });
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    await app.EnsureDatabaseCreatedAsync<ApplicationDbContext>(resetOnStart:true);
+}
+
 app.UseCors(MyAllowSpecificOrigins);
 
-app.MapGet("/", () => "Hello World!"); 
-app.MapPost("/create-checkout-session", () =>
+app.UseFastEndpoints(c =>
 {
-    var domain = "http://localhost:3000";
-    var options = new SessionCreateOptions
+    c.Endpoints.Configurator = ep =>
     {
-        UiMode = "custom",
-        LineItems =
-        [
-            new SessionLineItemOptions
-            {
-                // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-                //Price = "{{PRICE_ID}}",
-                PriceData = new SessionLineItemPriceDataOptions
-                {
-                    Currency = "usd",
-                    UnitAmount = 5000, // $50.00 (in cents)
-                    ProductData = new SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = "Custom T-Shirt"
-                    }
-                },
-                Quantity = 1,
-            },
-        ],
-        Mode = "payment",
-        PaymentMethodTypes = ["card"],
-        ReturnUrl = domain + "/return?session_id={CHECKOUT_SESSION_ID}",
+        ep.Options(b => b.AddEndpointFilter<EndpointRequestFilter>());
     };
-    var service = new SessionService();
-    Session session = service.Create(options);
+    c.Endpoints.RoutePrefix = "api";
+    c.Versioning.Prefix = "v";
+    c.Versioning.PrependToRoute = true;
+    c.Versioning.DefaultVersion = 1;
+}).UseSwaggerGen();
 
-    return Results.Json(new { clientSecret = session.ClientSecret });
-});
-
-app.MapGet("/session-status", ([FromQuery] string session_id) =>
-{
-    var sessionService = new SessionService();
-    Session session = sessionService.Get(session_id);
-
-    return Results.Json(new { status = session.Status, customer_email = session.CustomerDetails.Email });
-});
 app.Run();

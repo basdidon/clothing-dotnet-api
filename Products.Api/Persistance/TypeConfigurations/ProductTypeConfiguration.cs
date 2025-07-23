@@ -9,7 +9,10 @@ namespace Products.Api.Persistance.TypeConfigurations
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.HasKey(p => p.Id);
-          
+            builder.HasOne(p => p.Category)
+                   .WithMany(c => c.Products)
+                   .HasForeignKey(p => p.CategoryId)
+                   .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

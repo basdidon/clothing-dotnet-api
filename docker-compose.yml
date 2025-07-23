@@ -13,12 +13,6 @@ services:
       - 5672:5672
       - 15672:15672
 
-  payment.api:
-    image: ${DOCKER_REGISTRY-}paymentapi
-    build:
-      context: .
-      dockerfile: payment.api/Dockerfile
-
   products.api:
     image: ${DOCKER_REGISTRY-}productsapi
     build:
@@ -42,4 +36,33 @@ services:
     build:
       context: .
       dockerfile: Orders.Api/Dockerfile
+    depends_on:
+      orders.db:
+        condition: service_healthy
 
+  orders.db:
+    image: postgres:latest
+    container_name: orders.db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  payment.api:
+    image: ${DOCKER_REGISTRY-}paymentapi
+    build:
+      context: .
+      dockerfile: payment.api/Dockerfile
+    depends_on:
+     payment.db:
+        condition: service_healthy
+
+  payment.db:
+    image: postgres:latest
+    container_name: payment.db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

@@ -5,16 +5,16 @@ using Products.Api.Persistance;
 
 namespace Products.Api.Consumers
 {
-    public class GetProductPricesRequestHandler(ApplicationDbContext dbContext) : IConsumer<GetProductsRequest>
+    public class GetProductsRequestHandler(ApplicationDbContext dbContext) : IConsumer<GetProductsRequest>
     {
-        public Task Consume(ConsumeContext<GetProductsRequest> context)
+        public async Task Consume(ConsumeContext<GetProductsRequest> context)
         {
-            var productDtos = dbContext.Products.AsNoTracking()
+            var productDtos = await dbContext.Products.AsNoTracking()
                 .Where(x => context.Message.ProductIds.Contains(x.Id))
                 .Select(x => new ProductDto() { ProductId = x.Id, Title = x.Title, UnitPrice = x.UnitPrice })
                 .ToDictionaryAsync(x=> x.ProductId);
 
-            return context.RespondAsync(productDtos);
+            await context.RespondAsync(new GetProductsResponse(productDtos));
         }
     }
 }

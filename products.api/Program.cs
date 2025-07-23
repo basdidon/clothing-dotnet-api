@@ -8,6 +8,7 @@ using Products.Api.Consumers;
 using Products.Api.Extensions;
 using Products.Api.Persistance;
 using SharedLibrary.Masstransit;
+using SharedLibrary.Persistance.Extensions;
 using SharedLibrary.Settings;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -30,7 +31,7 @@ builder.Services.AddMassTransit(busConfigurator =>
 {
     busConfigurator.SetKebabCaseEndpointNameFormatter();
 
-    busConfigurator.AddConsumer<GetProductPricesRequestHandler>();
+    busConfigurator.AddConsumer<GetProductsRequestHandler>();
  
     busConfigurator.UsingRabbitMq((context, configurator) =>
     {
@@ -81,7 +82,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    await app.ApplyMigrationsAsync(resetOnStart:true);
+    await app.ApplyMigrationsAsync<ApplicationDbContext>(resetOnStart:true);
 }
 
 app.UseCors(MyAllowSpecificOrigins);

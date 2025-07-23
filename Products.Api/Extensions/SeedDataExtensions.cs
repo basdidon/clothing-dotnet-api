@@ -34,16 +34,5 @@ namespace Products.Api.Extensions
 
             return builder;
         }
-
-        public static async Task ApplyMigrationsAsync(this IApplicationBuilder app, bool resetOnStart = false, CancellationToken ct = default)
-        {
-            var scope = app.ApplicationServices.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            if (resetOnStart) 
-                await context.Database.EnsureDeletedAsync(ct);
-
-            await context.Database.MigrateAsync(ct);
-        }
     }
 }
