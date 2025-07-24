@@ -9,6 +9,8 @@ using SharedLibrary.Masstransit;
 using SharedLibrary.Persistance.Extensions;
 using SharedLibrary.Settings;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<MessageBrokerSettings>(builder.Configuration.GetSection("MessageBroker"));
@@ -35,6 +37,18 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins(builder.Configuration.GetSection("cors:allowUrls").Get<string[]>()!)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
 builder.Services
    .AddFastEndpoints(o => o.IncludeAbstractValidators = true)
    .SwaggerDocument(o =>
@@ -55,6 +69,8 @@ if (app.Environment.IsDevelopment())
 {
     await app.EnsureDatabaseCreatedAsync<ApplicationDbContext>(resetOnStart: true);
 }
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseFastEndpoints(c =>
 {
