@@ -17,7 +17,7 @@ services:
     image: ${DOCKER_REGISTRY-}productsapi
     build:
       context: .
-      dockerfile: products.api/Dockerfile
+      dockerfile: productsservice/Dockerfile
     depends_on:
       products.db:
         condition: service_healthy
@@ -35,7 +35,7 @@ services:
     image: ${DOCKER_REGISTRY-}ordersapi
     build:
       context: .
-      dockerfile: Orders.Api/Dockerfile
+      dockerfile: Ordersservice/Dockerfile
     depends_on:
       orders.db:
         condition: service_healthy
@@ -53,7 +53,7 @@ services:
     image: ${DOCKER_REGISTRY-}paymentapi
     build:
       context: .
-      dockerfile: payment.api/Dockerfile
+      dockerfile: paymentservice/Dockerfile
     depends_on:
      payment.db:
         condition: service_healthy
