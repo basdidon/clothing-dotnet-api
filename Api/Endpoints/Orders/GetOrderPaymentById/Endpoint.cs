@@ -1,10 +1,11 @@
 ﻿using FastEndpoints;
 using Stripe;
 
-namespace Payment.Api.Endpoints.Checkouts.GetStatus
+namespace Api.Endpoints.Orders.GetOrderPaymentById
 {
     public class Request
     {
+        public Guid OrderId { get; set; }
         public string PaymentIntentId { get; set; } = string.Empty;
     }
 
@@ -18,14 +19,14 @@ namespace Payment.Api.Endpoints.Checkouts.GetStatus
     {
         public override void Configure()
         {
-            Get("/checkout/{PaymentIntentId}/status");
+            Get("/paymentIntents/{PaymentIntentId}");
             AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             PaymentIntent session = service.Get(req.PaymentIntentId);
-            
+
             await Send.OkAsync(new Response
             {
                 Status = session.Status,

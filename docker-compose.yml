@@ -1,66 +1,16 @@
 services:
-  rabbit-mq:
-    image: rabbitmq:management
-    container_name: app.RabbitMq
-    hostname: app-mq
-    volumes:
-      - ./.containers/queue/data/:/var/lib/rabbitmq
-      - ./.containers/queue/log/:/var/log/rabbitmq
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    ports:
-      - 5672:5672
-      - 15672:15672
-
-  products.api:
-    image: ${DOCKER_REGISTRY-}productsapi
+  api:
+    image: ${DOCKER_REGISTRY-}api
     build:
       context: .
-      dockerfile: productsservice/Dockerfile
+      dockerfile: Api/Dockerfile
     depends_on:
-      products.db:
+      db:
         condition: service_healthy
-
-  products.db:
+  
+  db:
     image: postgres:latest
-    container_name: products.db
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  orders.api:
-    image: ${DOCKER_REGISTRY-}ordersapi
-    build:
-      context: .
-      dockerfile: Ordersservice/Dockerfile
-    depends_on:
-      orders.db:
-        condition: service_healthy
-
-  orders.db:
-    image: postgres:latest
-    container_name: orders.db
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  payment.api:
-    image: ${DOCKER_REGISTRY-}paymentapi
-    build:
-      context: .
-      dockerfile: paymentservice/Dockerfile
-    depends_on:
-     payment.db:
-        condition: service_healthy
-
-  payment.db:
-    image: postgres:latest
-    container_name: payment.db
+    container_name: appdb
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 10s

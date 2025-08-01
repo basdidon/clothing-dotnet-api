@@ -1,6 +1,4 @@
-﻿using Contract;
-using Contract.Payments;
-using FastEndpoints;
+﻿using FastEndpoints;
 using MassTransit;
 using Orders.Api.Models;
 using Orders.Api.Persistance;

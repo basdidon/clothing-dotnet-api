@@ -21,7 +21,7 @@ namespace Api.Endpoints.Auth.RefreshToken
             {
                 x.AccessTokenValidity = TimeSpan.FromMinutes(30);
                 x.RefreshTokenValidity = TimeSpan.FromDays(7);
-                x.Endpoint("/user/auth/refresh-token", ep =>
+                x.Endpoint("auth/refresh-token", ep =>
                 {
                     ep.Summary(s => s.Description = "this is the refresh token endpoint");
                     ep.Description(d => d.AutoTagOverride("User"));

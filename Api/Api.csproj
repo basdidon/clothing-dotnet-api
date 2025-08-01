@@ -4,14 +4,10 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>42dde6bb-d70f-44ba-902e-772ba06dd400</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Endpoints\Auth\Login\" />
-    <Folder Include="Endpoints\Auth\RecoverPassword\" />
-    <Folder Include="Endpoints\Orders\" />
-    <Folder Include="Endpoints\Products\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FastEndpoints" />
@@ -27,7 +23,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Stripe.net" />
   </ItemGroup>
 
 </Project>

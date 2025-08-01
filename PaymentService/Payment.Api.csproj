@@ -27,10 +27,5 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Stripe.net" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\Contract\Contract.csproj" />
-    <ProjectReference Include="..\Shared\SharedLibrary.csproj" />
-  </ItemGroup>
 
 </Project>
