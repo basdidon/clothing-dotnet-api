@@ -20,6 +20,8 @@ namespace Api.Endpoints.Orders.Create
 
     public class Response
     {
+        public Guid OrderId { get; set; }
+        public string PaymentIntentId { get; set; } = string.Empty;
         public string ClientSecret { get; set; } = string.Empty;
     }
 
@@ -28,7 +30,7 @@ namespace Api.Endpoints.Orders.Create
         public override void Configure()
         {
             Post("orders");
-            Roles(Role.Admin);
+            AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -57,6 +59,7 @@ namespace Api.Endpoints.Orders.Create
                 });
             }
             // store Order
+            await context.Orders.AddAsync(order, ct);
             await context.SaveChangesAsync(ct);
 
             var options = new PaymentIntentCreateOptions
@@ -85,6 +88,8 @@ namespace Api.Endpoints.Orders.Create
 
             Response = new()
             {
+                OrderId = order.Id,
+                PaymentIntentId = paymentIntent.Id,
                 ClientSecret = paymentIntent.ClientSecret
             };
         }

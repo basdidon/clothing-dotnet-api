@@ -12,7 +12,7 @@ namespace Api.Endpoints.Categories.Create
     {
         public override void Configure()
         {
-            Post("categories");
+            Post("categories");            
             Roles(Role.Admin);
         }
 

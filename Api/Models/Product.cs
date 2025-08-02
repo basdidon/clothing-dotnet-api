@@ -1,7 +1,6 @@
 ﻿using Api.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Namotion.Reflection;
 
 namespace Api.Models
 {
@@ -35,7 +34,7 @@ namespace Api.Models
             builder.Property(x => x.SubTitle)
                 .HasMaxLength(120);
             builder.Property(x => x.Description)
-                .HasMaxLength(255);
+                .HasMaxLength(500);
         }
     }
 }

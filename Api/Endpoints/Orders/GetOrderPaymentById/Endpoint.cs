@@ -13,6 +13,9 @@ namespace Api.Endpoints.Orders.GetOrderPaymentById
     {
         public string Status { get; set; } = string.Empty;
         public string CustomerEmail { get; set; } = string.Empty;
+        public long Amount { get; set; }
+        public long AmountReceived { get; set; }
+        public long AmountCapturable { get; set; }
     }
 
     public class Endpoint(PaymentIntentService service) : Endpoint<Request>
@@ -26,10 +29,13 @@ namespace Api.Endpoints.Orders.GetOrderPaymentById
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             PaymentIntent session = service.Get(req.PaymentIntentId);
-
+            
             await Send.OkAsync(new Response
             {
                 Status = session.Status,
+                Amount = session.Amount,
+                AmountCapturable = session.AmountCapturable,
+                AmountReceived = session.AmountReceived,
                 CustomerEmail = session.ReceiptEmail ?? string.Empty
             }, ct);
         }

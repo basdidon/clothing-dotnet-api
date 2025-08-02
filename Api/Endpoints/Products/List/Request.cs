@@ -1,11 +1,15 @@
-﻿namespace Api.Endpoints.Products.List
+﻿using System.ComponentModel;
+
+namespace Api.Endpoints.Products.List
 {
     public class Request
     {
-        public int Page { get; set; } = 1;
-        public int PageSize { get; set; } = 24;
+        [DefaultValue(1)]
+        public int Page { get; set; }
+        [DefaultValue(24)]
+        public int PageSize { get; set; }
 
         public int? CategoryId { get; set; }
-        public string CategoryName { get; set; } = string.Empty;
+        public string? CategoryName { get; set; } = string.Empty;
     }
 }

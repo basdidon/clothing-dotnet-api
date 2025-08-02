@@ -9,13 +9,17 @@ using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
+
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:Apikey").Value!;
 
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 var signingKey = builder.Configuration.GetSection("jwt:signingKey").Value;
 
 builder.Services.AddTransient<RoleService>();
+builder.Services.AddTransient<PaymentIntentService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

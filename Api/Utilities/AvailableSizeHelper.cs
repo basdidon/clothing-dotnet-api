@@ -23,6 +23,22 @@ namespace Api.Utilities
                 _ => AvaliableSizes.None
             };
         }
+
+        public static string[] GetAvaliableSizesAsStrings(AvaliableSizes avaliableSizes)
+        {
+            List<string> strs = [];
+
+            foreach (AvaliableSizes size in Enum.GetValues<AvaliableSizes>())
+            {
+                if (size == AvaliableSizes.None || size == AvaliableSizes.All)  // skip these values
+                    continue;
+
+                if (avaliableSizes.HasFlag(size))
+                    strs.Add(size.ToString());
+            }
+
+            return [.. strs];
+        }
     }
 
 

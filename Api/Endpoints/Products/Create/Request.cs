@@ -11,7 +11,7 @@
 
         public decimal UnitPrice { get; set; }
 
-        public IFormFile? Thumbnail { get; set; } = null!;
-        public IFormFileCollection? Images { get; set; }
+        //public IFormFile? Thumbnail { get; set; } = null!;
+        //public IFormFileCollection? Images { get; set; }
     }
 }

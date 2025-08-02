@@ -39,7 +39,7 @@ namespace Api.Endpoints.Products.List
             // map to response
             Response = new Response()
             {
-                Data = [.. products],
+                Data = [.. products.Select(x=>ProductDto.Map(x))],
                 CurrentPage = req.Page,
                 PageSize = req.PageSize,
                 TotalItems = totalItems,

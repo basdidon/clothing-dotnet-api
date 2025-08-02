@@ -17,6 +17,7 @@ namespace Api.Persistance
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder); // ⬅️ required for Identity!
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         } 
     }

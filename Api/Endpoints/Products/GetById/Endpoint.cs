@@ -1,5 +1,4 @@
-﻿using Api.Models;
-using Api.Persistance;
+﻿using Api.Persistance;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +9,7 @@ namespace Api.Endpoints.Products.GetById
         public Guid ProductId { get; set; }
     }
 
-    public class Endpoint(ApplicationDbContext context) : Endpoint<Request, Product>
+    public class Endpoint(ApplicationDbContext context) : Endpoint<Request, ProductDto>
     {
         public override void Configure()
         {
@@ -29,7 +28,7 @@ namespace Api.Endpoints.Products.GetById
             }
             else
             {
-                await Send.OkAsync(product, ct);
+                await Send.OkAsync(ProductDto.Map(product), ct);
             }
         }
     }
