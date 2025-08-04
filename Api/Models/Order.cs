@@ -11,6 +11,8 @@ namespace Api.Models
 
         public decimal TotalAmount => OrderLines.Sum(x => x.TotalPrice);
 
+        public ICollection<OrderPaymentIntent> OrderPaymentIntents { get; set; } = [];
+
         public bool IsPaid { get; set; } = false;
 
         public DateTime CreatedAt { get; set; }

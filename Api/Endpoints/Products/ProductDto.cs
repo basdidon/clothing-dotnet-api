@@ -5,6 +5,7 @@ namespace Api.Endpoints.Products
 {
     public class ProductDto
     {
+        public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string SubTitle { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -21,6 +22,7 @@ namespace Api.Endpoints.Products
         public static ProductDto Map(Product product)
         => new()
         {
+            Id = product.Id,
             Title = product.Title,
             SubTitle = product.SubTitle,
             Description = product.Description,

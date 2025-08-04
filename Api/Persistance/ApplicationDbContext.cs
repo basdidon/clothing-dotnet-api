@@ -9,7 +9,7 @@ namespace Api.Persistance
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderPayment> OrderPayments { get; set; }
+        public DbSet<OrderPaymentIntent> OrderPaymentIntents { get; set; }
 
         // User
         public DbSet<RefreshToken> RefreshTokens { get; set; }

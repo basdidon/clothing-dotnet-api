@@ -1,10 +1,11 @@
-﻿using Api.Persistance;
+﻿using Api.DTOs;
+using Api.Persistance;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Endpoints.Products.List
 {
-    public class Endpoint(ApplicationDbContext context) : Endpoint<Request, Response>
+    public class Endpoint(ApplicationDbContext context) : Endpoint<Request, PageResponse<ProductDto>>
     {
         public override void Configure()
         {
@@ -28,24 +29,7 @@ namespace Api.Endpoints.Products.List
                 queryable = queryable.Where(x => x.Category != null && x.Category.Name == req.CategoryName);
             }
 
-            // apply pagination
-            int totalItems = await context.Products.CountAsync(cancellationToken: ct);
-            int totalPages = (int)Math.Ceiling(totalItems / (double)req.PageSize);
-            queryable = queryable.Skip((req.Page - 1) * req.PageSize).Take(req.PageSize);
-
-            // execute the query
-            var products = await queryable.ToListAsync(ct);
-
-            // map to response
-            Response = new Response()
-            {
-                Data = [.. products.Select(x=>ProductDto.Map(x))],
-                CurrentPage = req.Page,
-                PageSize = req.PageSize,
-                TotalItems = totalItems,
-                TotalPages = totalPages
-            };
-
+            Response = await queryable.ToPageResponseAsync(req.Page, req.PageSize, ProductDto.Map, ct);
         }
     }
 }

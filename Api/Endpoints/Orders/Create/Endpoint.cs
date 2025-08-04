@@ -1,5 +1,4 @@
-﻿using Api.Constants;
-using Api.Models;
+﻿using Api.Models;
 using Api.Persistance;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +74,7 @@ namespace Api.Endpoints.Orders.Create
 
             var paymentIntent = service.Create(options);
 
-            OrderPayment stripeOrderPayment = new()
+            Models.OrderPaymentIntent stripeOrderPayment = new()
             {
                 Order = order,
                 PaymentIntentId = paymentIntent.Id,
@@ -83,7 +82,7 @@ namespace Api.Endpoints.Orders.Create
                 CreatedAt = DateTime.UtcNow,
             };
 
-            await context.OrderPayments.AddAsync(stripeOrderPayment, ct);
+            await context.OrderPaymentIntents.AddAsync(stripeOrderPayment, ct);
             await context.SaveChangesAsync(ct);
 
             Response = new()

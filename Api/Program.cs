@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:Apikey").Value!;
@@ -63,6 +65,17 @@ builder.Services.AddAuthentication(o =>
     o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                      });
+});
+
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
@@ -89,5 +102,7 @@ app.UseJwtRevocation<BlacklistChecker>()
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
 app.MapHealthChecks("health");
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
