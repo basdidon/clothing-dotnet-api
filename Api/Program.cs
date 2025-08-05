@@ -104,5 +104,6 @@ app.MapGet("/", () => Results.Redirect("/swagger"));
 app.MapHealthChecks("health");
 
 app.UseCors(MyAllowSpecificOrigins);
+app.UseStaticFiles();
 
 app.Run();

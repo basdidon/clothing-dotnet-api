@@ -23,8 +23,35 @@ namespace Api.Endpoints.Products.Create
                 SubTitle = req.SubTitle,
                 Description = req.Description,
                 UnitPrice = req.UnitPrice,
-                AvaliableSizes = AvailableSizeHelper.GetAvaliableSizes(req.AvailableSizes)
+                AvaliableSizes = AvailableSizeHelper.GetAvaliableSizes(req.AvailableSizes),
             };
+
+            if (req.Thumbnail != null)
+            {
+                var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+
+                if (!Directory.Exists(uploadDir))
+                {
+                    Directory.CreateDirectory(uploadDir);
+                }
+
+                var imagePathname = $"{Guid.NewGuid()}.png";
+                var filepath = Path.Combine(uploadDir, imagePathname);
+
+                var imageUrl = Path.Combine("images", imagePathname);
+
+
+                using var stream = req.Thumbnail.OpenReadStream();
+                using var fileStream = File.Create(filepath);
+                await stream.CopyToAsync(fileStream,ct);
+
+                product.Thumbnail = new()
+                {
+                    ImagePath = imageUrl
+                };
+            }
+
+            // save product to database
             await context.Products.AddAsync(product,ct);
             await context.SaveChangesAsync(ct);
         }
