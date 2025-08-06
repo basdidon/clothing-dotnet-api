@@ -47,7 +47,7 @@ namespace Api.Endpoints.Products.Create
 
                 product.Thumbnail = new()
                 {
-                    ImagePath = imageUrl
+                    ImageUrl = imageUrl
                 };
             }
 

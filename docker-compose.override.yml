@@ -13,6 +13,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ./wwwroot/images:/app/wwwroot/images
+
   db:
     environment:
       - POSTGRES_DB=appdb

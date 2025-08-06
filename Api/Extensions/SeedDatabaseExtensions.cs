@@ -41,7 +41,11 @@ namespace Api.Extensions
                 SubTitle = "pink floral embroidered stretch cotton corset top",
                 UnitPrice = 109,
                 Description = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorem ad explicabo eaque consectetur, dolore, error nostrum provident autem voluptatum libero ea distinctio veniam eos atque mollitia expedita sequi quo in nobis sapiente minima tempora id sunt? Sint ex corrupti nostrum odio cumque magni tempore similique repudiandae obcaecati?",
-                AvaliableSizes = AvaliableSizes.All
+                AvaliableSizes = AvaliableSizes.All,
+                Thumbnail = new()
+                {
+                    ImageUrl = "images/default.png"
+                }
             };
 
             Product product2 = new()
@@ -51,7 +55,11 @@ namespace Api.Extensions
                 SubTitle = "cream rose print stretch cotton mini sundress",
                 UnitPrice = 179,
                 Description = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorem ad explicabo eaque consectetur, dolore, error nostrum provident autem voluptatum libero ea distinctio veniam eos atque mollitia expedita sequi quo in nobis sapiente minima tempora id sunt? Sint ex corrupti nostrum odio cumque magni tempore similique repudiandae obcaecati?",
-                AvaliableSizes = AvaliableSizes.All
+                AvaliableSizes = AvaliableSizes.All,
+                Thumbnail = new()
+                {
+                    ImageUrl = "images/default.png"
+                }
             };
 
             await context.Products.AddAsync(product1);

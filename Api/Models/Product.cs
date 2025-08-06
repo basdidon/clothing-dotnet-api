@@ -18,10 +18,10 @@ namespace Api.Models
         public int? CategoryId { get; set; }
         public Category? Category { get; set; } = null!;
 
-        public ImageUrl? Thumbnail;
+        public ImageObject? Thumbnail { get; set; }
         public Guid? ThumbnailId { get; set; }
 
-        public ImageUrl[] ImageUrls { get; set; } = [];
+        public ICollection<ImageObject> Images { get; set; } = [];
     }
 
     public class ProductTypeConfiguration : IEntityTypeConfiguration<Product>
@@ -35,6 +35,15 @@ namespace Api.Models
                 .HasMaxLength(120);
             builder.Property(x => x.Description)
                 .HasMaxLength(500);
+
+            builder.HasOne(p => p.Thumbnail)
+                   .WithOne()
+                   .HasForeignKey<Product>(p => p.ThumbnailId)
+                   .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(x => x.Images)
+                .WithOne(x => x.Product)
+                .HasForeignKey(x => x.ProductId);
         }
     }
 }

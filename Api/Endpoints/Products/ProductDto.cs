@@ -30,8 +30,8 @@ namespace Api.Endpoints.Products
             AvalilableSizes = AvailableSizeHelper.GetAvaliableSizesAsStrings(product.AvaliableSizes),
             CategoryId = product.CategoryId,
             CategoryName = product.Category?.Name,
-            ThumbnailUrl = product.Thumbnail?.ImagePath,
-            ImageUrls = [..product.ImageUrls.Select(x=>x.ImagePath)]
+            ThumbnailUrl = product.Thumbnail?.ImageUrl,
+            ImageUrls = [..product.Images.Select(x=>x.ImageUrl)]
         };
     }
 }
