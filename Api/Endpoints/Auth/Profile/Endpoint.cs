@@ -1,12 +1,11 @@
 ﻿using FastEndpoints;
-using System.Security.Claims;
 
 namespace Api.Endpoints.Auth.Profile
 {
     public class Request
     {
-        [FromClaim]
-        public string Username { get; set; } =string.Empty;
+        [FromClaim(false)]
+        public string? Username { get; set; }
         [FromClaim]
         public string Email { get; set; } = string.Empty;
         [FromClaim("role")]
@@ -25,7 +24,7 @@ namespace Api.Endpoints.Auth.Profile
     {
         public override void Configure()
         {
-            Get("auth/profile/me");
+            Get("auth/profile");
         }
 
         public override Task HandleAsync(Request req,CancellationToken ct)

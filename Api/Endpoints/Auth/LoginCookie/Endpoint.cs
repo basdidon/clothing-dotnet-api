@@ -1,18 +1,22 @@
-﻿using Api.Endpoints.Auth.RefreshToken;
-using Api.Models;
+﻿using Api.Models;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
-namespace Api.Endpoints.Auth.Login
+namespace Api.Endpoints.Auth.LoginCookie
 {
-    public class Endpoint(UserManager<ApplicationUser> userManager) : Endpoint<Request, TokenResponse>
+    public class Request
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    public class Endpoint (UserManager<ApplicationUser> userManager): Endpoint<Request>
     {
         public override void Configure()
         {
-            Post("auth/login");
+            Post("/auth/cookie/login");
             AllowAnonymous();
             Description(x => x.AutoTagOverride("User"));
         }
@@ -24,12 +28,15 @@ namespace Api.Endpoints.Auth.Login
             {
                 var roles = await userManager.GetRolesAsync(user);
 
-                Response = await CreateTokenWith<FastEndpointsTokenService>(user.Id.ToString(), u =>
+                await CookieAuth.SignInAsync(u =>
                 {
                     u.Roles.AddRange(roles);
-                    u.Claims.Add(new Claim("UserId", user.Id.ToString()));
-                    u.Claims.Add(new Claim("Email", user.Email ?? string.Empty));
-                    u.Claims.Add(new Claim("Username", user.UserName ?? string.Empty));
+                    //u.Permissions.AddRange(["Create_Item", "Delete_Item"]);
+                    //u.Claims.Add(new("Address", "123 Street"));
+
+                    //indexer based claim setting
+                    u["Email"] = req.Email;
+                    //u["Department"] = "Administration";
                 });
             }
         }
