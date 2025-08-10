@@ -64,6 +64,19 @@ namespace Api.Extensions
 
             await context.Products.AddAsync(product1);
             await context.Products.AddAsync(product2);
+
+            Category tshirt = new()
+            {
+                Name = "T-Shirt"
+            };
+
+            Category shoes = new()
+            {
+                Name = "Shoes"
+            };
+
+            await context.Categories.AddAsync(tshirt);
+            await context.Categories.AddAsync(shoes);
             await context.SaveChangesAsync();
         }
     }

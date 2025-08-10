@@ -1,10 +1,11 @@
-﻿using Api.Persistance;
+﻿using Api.DTOs;
+using Api.Persistance;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Endpoints.Categories.List
 {
-    public class Endpoint(ApplicationDbContext context):EndpointWithoutRequest<Response>
+    public class Endpoint(ApplicationDbContext context):Endpoint<Request,PageResponse<CategoryDto>>
     {
         public override void Configure()
         {
@@ -12,14 +13,10 @@ namespace Api.Endpoints.Categories.List
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync(CancellationToken ct)
+        public override async Task HandleAsync(Request req,CancellationToken ct)
         {
-            var categories =  await context.Categories.AsNoTracking().ToListAsync(ct);
-            Response = new()
-            {
-                Categories = [..categories.Select(x => CategoryDto.Map(x))],
-                TotalCount = categories.Count
-            };
+            Response =  await context.Categories.AsNoTracking()
+                .ToPageResponseAsync(req.Page,req.PageSize,CategoryDto.Map,ct);
         }
     }
 }
