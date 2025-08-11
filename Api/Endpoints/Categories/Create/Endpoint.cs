@@ -24,7 +24,7 @@ namespace Api.Endpoints.Categories.Create
 
             if(existsCategory != null)
             {
-                AddError($"Category with name : {req.Name} already exists.");
+                AddError(x=>x.Name,$"Category with name : {req.Name} already exists.");
                 await Send.ErrorsAsync(409,ct);
                 return;
             }

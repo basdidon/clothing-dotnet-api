@@ -31,7 +31,7 @@ namespace Api.Extensions
             await userManager.CreateAsync(admin, "admin123");
             await context.SaveChangesAsync();
 
-            await userManager.AddToRoleAsync(admin,Role.Admin);
+            await userManager.AddToRoleAsync(admin, Role.Admin);
             await context.SaveChangesAsync();
 
             Product product1 = new()
@@ -67,12 +67,27 @@ namespace Api.Extensions
 
             Category tshirt = new()
             {
-                Name = "T-Shirt"
+                Name = "T-Shirt",
+
             };
 
             Category shoes = new()
             {
-                Name = "Shoes"
+                Name = "Shoes",
+                Products = [
+                    new (){
+                        Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
+                        Title = "Adidas Superstar",
+                        SubTitle = "",
+                        UnitPrice = 89,
+                        Description = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolorem ad explicabo eaque consectetur, dolore, error nostrum provident autem voluptatum libero ea distinctio veniam eos atque mollitia expedita sequi quo in nobis sapiente minima tempora id sunt? Sint ex corrupti nostrum odio cumque magni tempore similique repudiandae obcaecati?",
+                        AvaliableSizes = AvaliableSizes.All,
+                        Thumbnail = new()
+                        {
+                            ImageUrl = "images/default.png"
+                        }
+                    }
+                ],
             };
 
             await context.Categories.AddAsync(tshirt);

@@ -15,7 +15,10 @@ namespace Api.Endpoints.Products.List
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var queryable = context.Products.Include(x => x.Thumbnail).AsNoTracking();
+            var queryable = context.Products
+                .Include(x=>x.Category)
+                .Include(x => x.Thumbnail)
+                .AsNoTracking();
 
             // filter by categoryId
             if (req.CategoryId.HasValue)
