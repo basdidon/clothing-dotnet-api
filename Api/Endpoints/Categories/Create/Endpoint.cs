@@ -34,6 +34,7 @@ namespace Api.Endpoints.Categories.Create
                 Name = req.Name,
             };
 
+
             await context.Categories.AddAsync(category,ct);
             await context.SaveChangesAsync(ct);
 
