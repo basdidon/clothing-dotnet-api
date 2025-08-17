@@ -7,10 +7,13 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
+		Api\.env = Api\.env
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3demo", "S3demo\S3demo.csproj", "{1C8CB5C6-EDB8-4A01-A626-5ED0E1E04A7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +29,10 @@ Global
 		{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C8CB5C6-EDB8-4A01-A626-5ED0E1E04A7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C8CB5C6-EDB8-4A01-A626-5ED0E1E04A7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C8CB5C6-EDB8-4A01-A626-5ED0E1E04A7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C8CB5C6-EDB8-4A01-A626-5ED0E1E04A7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

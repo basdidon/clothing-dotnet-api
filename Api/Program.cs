@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Api;
 using Api.Extensions;
 using Api.Models;
@@ -19,6 +20,8 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:Apikey").V
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 var signingKey = builder.Configuration.GetSection("jwt:signingKey").Value!;
 
+builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
+builder.Services.AddAWSService<IAmazonS3>();
 
 builder.Services.AddTransient<RoleService>();
 builder.Services.AddTransient<PaymentIntentService>();
@@ -27,6 +30,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(connection);
 });
+
 builder.Services
     .AddIdentityCore<ApplicationUser>(options =>
     {
@@ -50,7 +54,7 @@ builder.Services.AddAuthenticationCookie(validFor: TimeSpan.FromMinutes(10), o =
     .AddAuthorization()
     .AddAntiforgery()
     .AddFastEndpoints(o => o.IncludeAbstractValidators = true)
-    .SwaggerDocument(o =>
+    .SwaggerDocument(o => 
     {
         o.MaxEndpointVersion = 1;
         o.DocumentSettings = s =>
@@ -99,8 +103,6 @@ app//.UseJwtRevocation<BlacklistChecker>()
         c.Versioning.PrependToRoute = true;
         c.Versioning.DefaultVersion = 1;
     }).UseSwaggerGen();
-
-
 
 
 app.Run();
